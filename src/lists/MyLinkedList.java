@@ -35,6 +35,27 @@ public class MyLinkedList {
         throw new IllegalArgumentException();
     }
 
+    public void remove(int index){
+        int currentIndex=0;
+        Node temp=head;
+        if (index==0){
+            head=head.getNext();
+            size--;
+            return;
+
+        }
+        while (temp!=null){
+            if (currentIndex==index-1){
+                temp.setNext(temp.getNext().getNext());
+                size--;
+                return;
+            }else{
+                temp=temp.getNext();
+                currentIndex++;
+            }
+        }
+    }
+
     @Override
     public String toString() {
         int[] ints=new int[size];
