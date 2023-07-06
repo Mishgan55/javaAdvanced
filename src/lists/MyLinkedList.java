@@ -70,7 +70,7 @@ public class MyLinkedList {
     }
 
     private static class Node{
-       private int value;
+        private int value;
         private Node next;
 
         public Node getNext() {
