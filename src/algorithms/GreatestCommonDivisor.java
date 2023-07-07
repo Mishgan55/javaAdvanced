@@ -1,42 +1,41 @@
 package algorithms;
 
 import java.math.BigInteger;
-import java.util.Scanner;
+
 
 public class GreatestCommonDivisor {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int i = scanner.nextInt();
-        int b = scanner.nextInt();
-        divisor(i,b);
+new GreatestCommonDivisor().run();
 
 
 
 
+    }
+
+    public void run(){
+        System.out.println(divisor(new BigInteger("12312341252345"),new BigInteger("323124423455332")));
+    }
+
+    private BigInteger divisor(BigInteger i, BigInteger b) {
+        while (true) {
+            System.out.println(i + " " + b);
+            if (i.equals(BigInteger.ZERO)) {
+                return b;
+            }
+            if (b.equals(BigInteger.ZERO)) {
+                return i;
+            }
+            if (i.compareTo(b) >= 0) {
+                i = i.mod(b);
+
+
+            } else {
+                b = b.mod(i);
+
+            }
 
 
         }
-        public static  int divisor(int i, int b){
-            if(i==0){
-                System.out.println(b);
-                return b;
-            }else if(b==0){
-                System.out.println(i);
-                return i;
-
-            }else
-            if(i>=b){
-           i=i % b;
-
-
-
-        }else if(b>=i){
-                b=b%i;
-
-
-
-
-}return divisor(i,b);
-}
+    }
 }
 
