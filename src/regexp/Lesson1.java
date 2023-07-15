@@ -1,6 +1,6 @@
 package regexp;
 
-public class lesson1 {
+public class Lesson1 {
     /*  \\d- одна цифра
         \\w- любая буква
     *    * - 1 или более
@@ -39,5 +39,8 @@ public class lesson1 {
         String c="1234";
 
         System.out.println(c.matches("\\d{2,5}"));
+
+        String d = "hello world my name is Misha";
+        System.out.println(d.replaceAll(" ","."));
     }
 }
