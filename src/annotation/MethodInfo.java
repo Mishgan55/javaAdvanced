@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 public @interface MethodInfo {
     String author() default "Mikhail";
     int dateOfCreate() default 2022;
-    String info();
+
 }
