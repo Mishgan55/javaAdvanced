@@ -1,7 +1,5 @@
 package algorithms;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 //5 1 5 8 12 13
