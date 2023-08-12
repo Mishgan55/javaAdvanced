@@ -3,6 +3,8 @@ package unitTests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Method;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CarTest {
@@ -47,6 +49,19 @@ class CarTest {
     void getLastOwners2() {
         car.setCurrentOwner("Hanna");
         assertArrayEquals(new String[]{"Mikhail Khorsun","Hanna"},car.getLastOwners().toArray());
+    }
+
+    @Test
+    void testSomeString(){
+
+        try {
+            Method method=Car.class.getDeclaredMethod("someString",String.class);
+            method.setAccessible(true);
+
+            assertEquals("Mikhail",method.invoke(car,"Mikhail").toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

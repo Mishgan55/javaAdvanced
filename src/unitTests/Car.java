@@ -46,4 +46,8 @@ public class Car {
         return lastOwners;
     }
 
+    private String someString(String name){
+        return name;
+    }
+
 }
