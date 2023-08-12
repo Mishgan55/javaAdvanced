@@ -2,6 +2,11 @@ package unitTests;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Method;
 
@@ -23,6 +28,13 @@ class CarTest {
     @Test
     void getNumber() {
         assertEquals(1111,car.getNumber());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"1234", "1111", "0001"})
+    void setMultipleNumber(int input){
+        car.setNumber(input);
+        assertEquals(input,car.getNumber());
     }
 
     @Test
@@ -51,14 +63,16 @@ class CarTest {
         assertArrayEquals(new String[]{"Mikhail Khorsun","Hanna"},car.getLastOwners().toArray());
     }
 
-    @Test
-    void testSomeString(){
+    @ParameterizedTest
+    @CsvSource({"Misha","Hanna"})
+    @EmptySource
+    void testSomeString(String value){
 
         try {
             Method method=Car.class.getDeclaredMethod("someString",String.class);
             method.setAccessible(true);
 
-            assertEquals("Mikhail",method.invoke(car,"Mikhail").toString());
+            assertEquals(value,method.invoke(car,value).toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
