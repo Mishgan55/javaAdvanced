@@ -67,7 +67,6 @@ class CarTest {
     @CsvSource({"Misha","Hanna"})
     @EmptySource
     void testSomeString(String value){
-
         try {
             Method method=Car.class.getDeclaredMethod("someString",String.class);
             method.setAccessible(true);
