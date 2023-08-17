@@ -14,16 +14,14 @@ public class FibonacciNumbers {
         if (n<2){
             return BigInteger.valueOf(n);
         }
-        if(map.containsKey(n)){
-            return map.get(n);
-        }else {
-            for (int i = 2; i <=n ; i++) {
-                BigInteger res= fibonacci(i-1).add(fibonacci(i-2));
-                map.put(i,res);
+        if (!map.containsKey(n)) {
+            for (int i = 2; i <= n; i++) {
+                BigInteger res = fibonacci(i - 1).add(fibonacci(i - 2));
+                map.put(i, res);
             }
 
-            return map.get(n);
         }
+        return map.get(n);
     }
 
 
