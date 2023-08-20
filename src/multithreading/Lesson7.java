@@ -1,62 +1,39 @@
 package multithreading;
 
+
 import java.util.Scanner;
 
 public class Lesson7 {
     public static void main(String[] args) throws InterruptedException {
-
-        WaitAndNotify waitAndNotify = new WaitAndNotify();
-
-        Thread thread1=new Thread(new Runnable() {
-            @Override
-            public void run() {
+        Object lock = new Object();
+        Thread thread1=new Thread(()->{
+        synchronized (lock){
+            System.out.println("Producer is starting");
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("producer resumed");
+        }
+    });
+        Scanner scanner = new Scanner(System.in);
+        Thread thread2 =new Thread(()->{
+            synchronized (lock){
                 try {
-                    waitAndNotify.producer();
+                    Thread.sleep(2000);
+                    System.out.println("Waiting for return case");
+                    scanner.nextLine();
+                    lock.notify();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
-
-        Thread thread2 =new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    waitAndNotify.consumer();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
         thread1.start();
         thread2.start();
+
         thread1.join();
-        thread2.join();
-
-    }
-}
-class WaitAndNotify{
-
-    public void producer() throws InterruptedException {
-        synchronized (this){
-            System.out.println("producer start...");
-            wait();
-            System.out.println("producer finished...");
-        }
-
-
-    }
-    public void consumer() throws InterruptedException {
-
-        Scanner scanner = new Scanner(System.in);
-
-        synchronized (this){
-            Thread.sleep(2000);
-            System.out.println("push Enter...");
-            scanner.nextLine();
-            notify();
-        }
-
+        thread1.join();
     }
 }
