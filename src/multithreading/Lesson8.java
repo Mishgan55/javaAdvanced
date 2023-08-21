@@ -2,79 +2,66 @@ package multithreading;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 
 public class Lesson8 {
+
     public static void main(String[] args) throws InterruptedException {
+        Queue<Integer> queue= new LinkedList<>();
+        final int LIMIT=10;
+        final Object lock=new Object();
+        Random random=new Random();
 
-        ProducerConsumer producerConsumer = new ProducerConsumer();
+        Thread thread1=new Thread(()->{
+            while (true) {
+                synchronized (lock) {
+                    while (queue.size() == LIMIT) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    queue.offer(random.nextInt(10));
+                    lock.notify();
 
-        Thread thread1=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    producerConsumer.producer();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         });
 
-        Thread thread2 =new Thread(new Runnable() {
-            @Override
-            public void run() {
+        Thread thread2=new Thread(()->{
+            while (true) {
+                synchronized (lock) {
+                    while (queue.size() == 0) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    int value = queue.poll();
+                    System.out.println("Element " + value + " had been removed from queue");
+                    System.out.println("Queue size is " + queue.size());
+                    lock.notify();
+                }
                 try {
-                    producerConsumer.consumer();
+                    Thread.sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
+
         });
 
         thread1.start();
         thread2.start();
+
         thread1.join();
         thread2.join();
 
     }
 
-    }
-
-
-class ProducerConsumer{
-    private Queue<Integer> queue = new LinkedList<>();
-    private  static final int LIMIT=10;
-    private final Object lock=new Object();
-
-    public void producer() throws InterruptedException {
-        int value=0;
-    while (true)   {
-        synchronized (lock){
-            while (queue.size()==LIMIT){
-                lock.wait();
-            }
-            queue.offer(value++);
-            lock.notify();
-
-
-
-        }
-    }
-
-    }
-    public void consumer() throws InterruptedException {
-
-        while (true){
-            synchronized (lock){
-                while (queue.size()==0){
-                    lock.wait();
-                }
-                int value=queue.poll();
-                System.out.println("Queue size= "+queue.size());
-                System.out.println(value);
-                lock.notify();
-            }
-            Thread.sleep(1000);
-        }
-
-    }
 }
+
+
+
