@@ -12,13 +12,21 @@ public class Lesson12 {
         Thread thread1=new Thread(new Runnable() {
             @Override
             public void run() {
-                run.firstThread();
+                try {
+                    run.firstThread();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
         Thread thread2=new Thread(new Runnable() {
             @Override
             public void run() {
-                run.secondThread();
+                try {
+                    run.secondThread();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -34,40 +42,40 @@ public class Lesson12 {
     }
 }
 class Run{
-   private Account account1= new Account();
-    private Account account2=new Account();
+    private final Account account1=new Account();
+    private final Account account2=new Account();
 
-    private Lock lock1=new ReentrantLock();
-    private Lock lock2=new ReentrantLock();
+    Lock lock1=new ReentrantLock();
+    Lock lock2=new ReentrantLock();
 
-    private void takesLock(Lock l1,Lock l2){
-        boolean firstLockTaken=false;
-        boolean secondLockTaken=false;
+    Random random = new Random();
+
+    private void takesLock(Lock l1,Lock l2) throws InterruptedException {
+        boolean firstLockIsTaken=false;
+        boolean secondLockIsTaken=false;
 
         while (true){
             try {
-                firstLockTaken=l1.tryLock();
-                secondLockTaken= l2.tryLock();
+            firstLockIsTaken = l1.tryLock();
+            secondLockIsTaken=l2.tryLock();
             }finally {
-                if (firstLockTaken && secondLockTaken){
+
+                if (firstLockIsTaken && secondLockIsTaken) {
                     return;
                 }
-                if (firstLockTaken){
+                if (firstLockIsTaken) {
                     l1.unlock();
                 }
-                if (secondLockTaken){
+                if (secondLockIsTaken) {
                     l2.unlock();
                 }
             }
-
+            Thread.sleep(10);
         }
-
     }
 
-    public void firstThread(){
-        Random random = new Random();
-        for (int i = 0; i < 10000; i++) {
-
+    public void firstThread() throws InterruptedException {
+        for (int i = 0; i < 1000; i++) {
             takesLock(lock1,lock2);
             try {
                 Account.transfer(account1, account2, random.nextInt(100));
@@ -75,14 +83,12 @@ class Run{
                 lock1.unlock();
                 lock2.unlock();
             }
-
         }
 
     }
-    public void secondThread(){
-        Random random = new Random();
-        for (int i = 0; i < 10000; i++) {
-            takesLock(lock2,lock1);
+    public void secondThread() throws InterruptedException {
+        for (int i = 0; i < 1000; i++) {
+            takesLock(lock1,lock2);
             try {
                 Account.transfer(account2, account1, random.nextInt(100));
             }finally {
@@ -100,20 +106,23 @@ class Run{
     }
 }
 class Account{
-    private int value=10000;
+    private  int balance= 20000;
 
     public void deposit(int amount){
-        value+=amount;
+        balance+=amount;
     }
+
     public void withdraw(int amount){
-        value-=amount;
+        balance-=amount;
+    }
+    public static void transfer(Account acc1,Account acc2,int amount){
+        acc1.withdraw(amount);
+        acc2.deposit(amount);
     }
     public int getValue(){
-        return value;
+        return balance;
     }
-    public static void transfer(Account a1, Account a2,int amount){
-        a1.withdraw(amount);
-        a2.deposit(amount);
-    }
+
+
 
 }
