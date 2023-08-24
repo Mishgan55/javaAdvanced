@@ -10,35 +10,24 @@ import java.util.concurrent.TimeUnit;
 
 public class Lesson14 {
     public static void main(String[] args) throws InterruptedException {
+        ExecutorService executorService=Executors.newFixedThreadPool(1);
 
-        ExecutorService executorService= Executors.newFixedThreadPool(1);
-
-        Future<Integer>future=executorService.submit(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                Random random=new Random();
-                int r=random.nextInt(10);
-                if (r<5){
-                    throw new Exception("Bad value");
-                }
-                return r;
-            }
-        });
-
-        executorService.shutdown();
-        executorService.awaitTermination(1, TimeUnit.DAYS);
+      Future<Integer> future= executorService.submit(()->{
+          Random random=new Random();
+         int number= random.nextInt(10);
+         if (number<5)
+             throw new Exception("Number less then 5");
+          return number;
+      });
+      executorService.shutdown();
 
         try {
             Integer integer = future.get();
             System.out.println(integer);
         } catch (ExecutionException e) {
-            e.printStackTrace();
             Throwable cause = e.getCause();
-            System.out.println(cause);
+            System.out.println(cause.getMessage());
         }
 
     }
-
-
-
 }
